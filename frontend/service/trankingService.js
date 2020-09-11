@@ -4,7 +4,7 @@ class ServiceTracking {
       this.key = 'd67bd4-812908';
       this.URI1 = 'https://aviation-edge.com/v2/public/flights?';
       this.URI2 = 'https://aviation-edge.com/v2/public/routes?';
-      this.URI3 = 'http://aviation-edge.com/v2/public/timetable?';
+      this.URI3 = 'https://aviation-edge.com/v2/public/timetable?';
       this.URI4= 'https://aviation-edge.com/v2/public/autocomplete?';
       this.URI5 = 'https://aviation-edge.com/v2/public/airlineDatabase?';
     }

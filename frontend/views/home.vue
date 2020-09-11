@@ -71,6 +71,7 @@
 </template>
 <script>
 import service from '../service/trankingService';
+import iconoMarker from '../image/marker-png.png';
 export default{
     mounted() {
         this.initMap();
@@ -113,7 +114,7 @@ export default{
         loadAircraft(){
             var ref = this;
             let myIcon = new L.Icon({
-                iconUrl: 'http://localhost:3000/marker-png.png',
+                iconUrl: iconoMarker,
                 iconSize: [40, 50],
                 iconAnchor: [25, 40]
                 });

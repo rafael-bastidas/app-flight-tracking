@@ -2,7 +2,7 @@
 <div>
   <b-navbar toggleable="lg" type="dark" variant="info">
     <div class="container">
-      <b-navbar-brand href="#">
+      <b-navbar-brand href="/">
         <b-img v-bind="mainProps" rounded alt="Rounded image"></b-img>
       </b-navbar-brand>
 
@@ -23,10 +23,11 @@
 </div>
 </template>
 <script>
+import logo from './image/logo-png.png';
 export default {
   data(){
     return {
-      mainProps: { src:"http://localhost:3000/logo-png.png", blank: false, blankColor: '#777', width: 120, height: 40, class: 'm1 d-inline-block align-top' }
+      mainProps: { src:logo, blank: false, blankColor: '#777', width: 120, height: 40, class: 'm1 d-inline-block align-top' }
     }
   }
 }
