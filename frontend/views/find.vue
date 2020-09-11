@@ -1,8 +1,8 @@
 <template>
     <div>
         <b-button-group class="d-flex">
-        <b-button v-on:click="loadFlight()" :class="classA" class="w-50" squared>TIMITABLES FLIGHT</b-button>
-        <b-button v-on:click="loadAirport()" :class="classB" class="w-50" squared>TIMITABLES AIRPORT</b-button>
+        <b-button v-on:click="loadFlight()" :class="classA" class="w-50" squared>Itinerario de Vuelos</b-button>
+        <b-button v-on:click="loadAirport()" :class="classB" class="w-50" squared>Itinerario de Aeropuertos</b-button>
         </b-button-group>
 
         <div v-if="switchForA">
