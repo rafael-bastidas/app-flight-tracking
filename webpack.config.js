@@ -28,9 +28,10 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif)/,
-        use: [
-          'file-loader',
-        ],
+        loader: 'file-loader',
+        options: {
+          name: 'img/[name].[ext]',
+        },
       }
     ],
   },
@@ -54,7 +55,7 @@ module.exports = {
     }),
   ],
   output: {
-   filename: 'js/[name].bundle.js',
+   filename: 'js/[name].bundle.min.js',
     path: path.resolve(__dirname, 'backend/public'),
   },
 };

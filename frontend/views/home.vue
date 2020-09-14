@@ -72,6 +72,11 @@
 <script>
 import service from '../service/trankingService';
 import iconoMarker from '../image/marker-png.png';
+import iconoMarker0 from '../image/marker0-png.png';
+import iconoMarker1 from '../image/marker1-png.png';
+import iconoMarker2 from '../image/marker2-png.png';
+import iconoMarker3 from '../image/marker3-png.png';
+
 export default{
     mounted() {
         this.initMap();
@@ -105,22 +110,38 @@ export default{
                 //Solicitud de datos a: aviation-edge
                 let trackAPI = new service();
                 ref.dataFligth = await trackAPI.getFligth(ref.map.getCenter(), radio);
-                ref.loadAircraft();
+                typeof ref.dataFligth[0] !== 'undefined' ? ref.loadAircraft() : console.log('No hay vuelos cerca');
+
+                ref.dataAirport = await trackAPI.getAirport(ref.map.getCenter(), radio);
+                typeof ref.dataAirport[0] !== 'undefined' ? ref.loadAirport() : console.log('No hay aeropuertos cerca');
 
                 //Ajuste del Size del map
                 document.getElementById('mapid').getAttributeNode('style').value = 'position: relative; height: '+(window.innerHeight-70)+'px;';                
             });
         },
+        loadAirport(){
+            this.dataAirport.forEach(element => {
+                let markerAirport = L.marker([element.latitudeAirport, element.longitudeAirport], {title: 'Aeropuerto'}).addTo(this.map);
+                markerAirport.bindPopup(`<b>${element.nameAirport}</b><br>Ciudad: ${element.codeIataCity}<br>Pais: ${element.nameCountry}`);
+            });
+        },
         loadAircraft(){
             var ref = this;
-            let myIcon = new L.Icon({
-                iconUrl: iconoMarker,
-                iconSize: [40, 50],
-                iconAnchor: [25, 40]
-                });
-            
+            let myIcon;
             this.dataFligth.forEach(element => {
-                let marker = L.marker([element.geography.latitude, element.geography.longitude], {icon: myIcon, title: 'Algo'}).addTo(this.map);
+                if (element.geography.direction >= 0 && element.geography.direction < 90) {
+                   myIcon = new L.Icon({ iconUrl: iconoMarker0, iconSize: [40, 40], iconAnchor: [20, 30] });
+                } else if (element.geography.direction >= 90 && element.geography.direction < 180) {
+                   myIcon = new L.Icon({ iconUrl: iconoMarker1, iconSize: [40, 40], iconAnchor: [20, 30] });
+                } else if (element.geography.direction >= 180 && element.geography.direction < 270) {
+                   myIcon = new L.Icon({ iconUrl: iconoMarker2, iconSize: [40, 40], iconAnchor: [20, 30] });
+                } else if (element.geography.direction >= 270 && element.geography.direction < 360) {
+                   myIcon = new L.Icon({ iconUrl: iconoMarker3, iconSize: [40, 40], iconAnchor: [20, 30] });
+                } else {
+                   myIcon = new L.Icon({ iconUrl: iconoMarker, iconSize: [40, 40], iconAnchor: [20, 30] });
+                }
+
+                let marker = L.marker([element.geography.latitude, element.geography.longitude], {icon: myIcon, title: 'Avion'}).addTo(this.map);
                 marker.bindPopup(`<h3>${element.aircraft.icaoCode}</h3>`);
                 marker.info = {
                     'departure': element.departure.iataCode,
@@ -151,7 +172,8 @@ export default{
             heigthScreen: window.innerHeight,
             map: null,
             titleLayer: null,
-            dataFligth: '',
+            dataFligth: null,
+            dataAirport: null,
             markerInfo: {
                     'departure': '',
                     'arrival': '',

@@ -7,6 +7,15 @@ class ServiceTracking {
       this.URI3 = 'https://aviation-edge.com/v2/public/timetable?';
       this.URI4= 'https://aviation-edge.com/v2/public/autocomplete?';
       this.URI5 = 'https://aviation-edge.com/v2/public/airlineDatabase?';
+      this.URI6 = 'https://aviation-edge.com/v2/public/nearby?'
+    }
+
+    async getAirport(center, radio){
+      const response = await fetch(`${this.URI6}key=${this.key}&lat=${center.lat}&lng=${center.lng}&distance=${radio}`, {
+        method: 'GET'
+      });
+      const data = await response.json();
+      return data;
     }
 
     async getAutoComplete(city){
