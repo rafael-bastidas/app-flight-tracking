@@ -11,7 +11,7 @@ class ServiceTracking {
     }
 
     async postDeleteOneDataUser(dataUser){
-      const response = await fetch(`http://localhost:3000/db/delete`, {
+      const response = await fetch(`db/delete`, {
         method: 'POST',
         body: JSON.stringify(dataUser),
         headers: { 'Content-Type': 'application/json'}
@@ -22,7 +22,7 @@ class ServiceTracking {
     }
 
     async postDataUser(dataUser){
-      const response = await fetch(`http://localhost:3000/db/update`, {
+      const response = await fetch(`db/update`, {
         method: 'POST',
         body: JSON.stringify(dataUser),
         headers: { 'Content-Type': 'application/json'}
@@ -33,7 +33,7 @@ class ServiceTracking {
     }
 
     async getUsuarios(userID){
-      const response = await fetch(`http://localhost:3000/db/${userID}`, {
+      const response = await fetch(`db/${userID}`, {
         method: 'GET'
       });
       const data = await response.json();
@@ -41,7 +41,7 @@ class ServiceTracking {
     }
 
     async postUsuarios(user){
-      const response = await fetch('http://localhost:3000/db', {
+      const response = await fetch('db', {
         method: 'POST',
         body: JSON.stringify(user),
         headers: { 'Content-Type': 'application/json'}
