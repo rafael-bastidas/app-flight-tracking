@@ -30,13 +30,41 @@
               class="d-inline-block"
             >
             <b-card title="Vuelos de llegada" class="mb-3">
-              <b-table fixed sticky-header="300px" no-border-collapse striped hover :items="itemsArrival" :fields="fieldsArrival"></b-table>
+              <b-table 
+              selectable
+              select-mode="single"
+              @row-selected="onRowSelected"
+              fixed 
+              sticky-header="300px" 
+              no-border-collapse 
+              striped 
+              hover 
+              :items="itemsArrival" 
+              :fields="fieldsArrival"></b-table>
             </b-card>
 
             <b-card title="Vuelos de salida">
-              <b-table fixed sticky-header="300px" no-border-collapse striped hover :items="itemsDeparture" :fields="fieldsDeparture"></b-table>
+              <b-table 
+              selectable
+              select-mode="single"
+              @row-selected="onRowSelected"
+              fixed 
+              sticky-header="300px" 
+              no-border-collapse 
+              striped 
+              hover 
+              :items="itemsDeparture" 
+              :fields="fieldsDeparture"></b-table>
             </b-card>
             </b-overlay>
+
+            <b-modal id="bv-modal-example" hide-footer>
+                <div class="d-block text-center">
+                    <h3>¿Añadir a mis vuelos?</h3>
+                </div>
+                <b-button class="mt-3" block @click="updateDataUser">Agregar</b-button>
+            </b-modal>
+
         </b-container>
     </div>
 </template>
@@ -49,21 +77,38 @@ import service from '../service/trankingService';
         // Note `isActive` is left out and will not appear in the rendered table
         fieldsArrival: ['Vuelo', 'Desde', 'Aerolinea', 'Hora', 'Status'],
         itemsArrival: [
-          { isActive: true, Desde: '----', Hora: '----', Vuelo: '----', Aerolinea: '----', Status: '----' }
+          { isActive: true, icaoAirline: '', iataArrival: '', iataDeparture: '', Desde: '----', Hora: '----', Vuelo: '----', Aerolinea: '----', Status: '----' }
         ],
         // Note `isActive` is left out and will not appear in the rendered table
         fieldsDeparture: ['Vuelo', 'Hacia', 'Aerolinea', 'Hora', 'Status'],
         itemsDeparture: [
-          { isActive: true, Hacia: '----', Hora: '----', Vuelo: '----', Aerolinea: '----', Status: '----' }
+          { isActive: true, icaoAirline: '', iataArrival: '', iataDeparture: '', Hacia: '----', Hora: '----', Vuelo: '----', Aerolinea: '----', Status: '----' }
         ],
         f_airport: null,
         optionsAirports: [
             { text: '--', value: '--' }
         ],
         busy: false,
+        selected: []
       }
     },
     methods:{
+      onRowSelected(items){
+          if(this.$root.userCurrent !== ''){
+              this.selected = items;
+              this.$bvModal.show('bv-modal-example');
+          }
+      },
+      async updateDataUser(){
+            this.$bvModal.hide('bv-modal-example');
+            if (this.selected[0].icaoAirline !== '' && this.selected[0].Vuelo !== '' && this.selected[0].iataArrival !== '' && this.selected[0].iataDeparture !== '') {
+                let dataUser = {email: this.$root.userCurrent.email, info: {departure: this.selected[0].iataDeparture, arrival: this.selected[0].iataArrival, airline: this.selected[0].icaoAirline, flight: this.selected[0].Vuelo}};
+                let trackAPI = new service();
+                await trackAPI.postDataUser(dataUser);
+            } else {
+                alert('No se dispone de la informacón suficiente para identificar el vuelo.');
+            }
+      },
       async previewLoad(){
         this.busy = true;
         try {
@@ -82,8 +127,11 @@ import service from '../service/trankingService';
           dataFligth_out.forEach(element => {
             arrayItem[arrayItem.length] = {
               isActive: false,
-              Vuelo: element.flight.iataNumber,
+              Vuelo: element.flight.number,
               Aerolinea: element.airline.name,
+              icaoAirline: element.airline.icaoCode,
+              iataDeparture: this.f_airport,
+              iataArrival: element.arrival.iataCode,
               Hacia: element.arrival.iataCode,
               Status: element.status,
               Hora: element.arrival.scheduledTime
@@ -100,8 +148,11 @@ import service from '../service/trankingService';
           dataFligth_in.forEach(element => {
             arrayItem[arrayItem.length] = {
               isActive: false,
-              Vuelo: element.flight.iataNumber,
+              Vuelo: element.flight.number,
               Aerolinea: element.airline.name,
+              icaoAirline: element.airline.icaoCode,
+              iataDeparture: element.departure.iataCode,
+              iataArrival: this.f_airport,
               Desde: element.departure.iataCode,
               Status: element.status,
               Hora: element.departure.scheduledTime

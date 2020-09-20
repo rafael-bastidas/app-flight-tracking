@@ -1,10 +1,11 @@
 //const morgan = require('morgan');
 const express = require('express');
 const path = require('path');
-//const cors = require('cors');
+const cors = require('cors');
 
 //Initializations
 const app = express();
+require('./DataBase/conectionDB.js');
 
 //Setting
 app.set('port', process.env.PORT || 3000);
@@ -13,7 +14,7 @@ app.set('port', process.env.PORT || 3000);
 //app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
-//app.use(cors());
+app.use(cors());
 
 //Routes
 app.use('/', require('./routes/mainRoute'));

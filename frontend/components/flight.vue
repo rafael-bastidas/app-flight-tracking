@@ -42,9 +42,25 @@
               spinner-variant="primary"
             >
             <b-card title="Información de Vuelos" class="mb-3">
-                <b-table sticky-header="300px" no-border-collapse striped hover :items="items" :fields="fields"></b-table>
+                <b-table 
+                selectable
+                select-mode="single"
+                @row-selected="onRowSelected"
+                sticky-header="300px" 
+                no-border-collapse 
+                striped 
+                hover 
+                :items="items" 
+                :fields="fields"></b-table>
             </b-card>
             </b-overlay>
+
+            <b-modal id="bv-modal-example" hide-footer>
+                <div class="d-block text-center">
+                    <h3>¿Añadir a mis vuelos?</h3>
+                </div>
+                <b-button class="mt-3" block @click="updateDataUser">Agregar</b-button>
+            </b-modal>
         
         </b-container>
     </div>
@@ -58,7 +74,7 @@ import service from '../service/trankingService';
         // Note `isActive` is left out and will not appear in the rendered table
         fields: ['Vuelo', 'Aerolinea', 'Hrs_Salida', 'Hrs_Llegada'],
         items: [
-          { isActive: true, Vuelo: '---', Hrs_Salida: '----', Hrs_Llegada: '----', Aerolinea: '----' }
+          { isActive: true, icaoAirline: '', Vuelo: '---', Hrs_Salida: '----', Hrs_Llegada: '----', Aerolinea: '----' }
         ],
         departure: null,
         arrival: null,
@@ -70,9 +86,27 @@ import service from '../service/trankingService';
             { text: '--', value: '--' }
         ],
         busy: false,
+        selected: []
       }
     },
     methods: {
+        async onRowSelected(items){
+            if(this.$root.userCurrent !== ''){
+                this.selected = items;
+                console.log(this.selected);
+                this.$bvModal.show('bv-modal-example');
+            }
+        },
+        async updateDataUser(){
+            this.$bvModal.hide('bv-modal-example');
+            if (this.selected[0].icaoAirline !== '' && this.selected[0].Vuelo !== '') {
+                let dataUser = {email: this.$root.userCurrent.email, info: {departure: this.departure, arrival: this.arrival, airline: this.selected[0].icaoAirline, flight: this.selected[0].Vuelo}};
+                let trackAPI = new service();
+                await trackAPI.postDataUser(dataUser);
+            } else {
+                alert('No se dispone de la informacón suficiente para identificar el vuelo.');
+            }
+        },
         async previewLoad(){
             this.busy = true;
             try {
@@ -102,6 +136,7 @@ import service from '../service/trankingService';
                 airlineName = await trackAPI.getInfoAirline(element.airlineIata, element.airlineIcao);
                 arrayItems[arrayItems.length] = {
                     isActive: true,
+                    icaoAirline: element.airlineIcao,
                     Vuelo: element.flightNumber,
                     Aerolinea: airlineName,
                     Hrs_Salida: element.departureTime === null ? '---' : element.departureTime,

@@ -16,8 +16,14 @@ Vue.use(BootstrapVue);
 import router from './routes/router';
 import main from './main.vue';
 
+const eventBus = new Vue();
+
 const app = new Vue({
     el: '#myApp',
+    data: {
+        bus: eventBus,
+        userCurrent: ''
+    },
     router,
     render (h) { return h(main) }
 });

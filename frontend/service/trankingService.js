@@ -10,6 +10,47 @@ class ServiceTracking {
       this.URI6 = 'https://aviation-edge.com/v2/public/nearby?'
     }
 
+    async postDeleteOneDataUser(dataUser){
+      const response = await fetch(`http://localhost:3000/db/delete`, {
+        method: 'POST',
+        body: JSON.stringify(dataUser),
+        headers: { 'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+
+    async postDataUser(dataUser){
+      const response = await fetch(`http://localhost:3000/db/update`, {
+        method: 'POST',
+        body: JSON.stringify(dataUser),
+        headers: { 'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+
+    async getUsuarios(userID){
+      const response = await fetch(`http://localhost:3000/db/${userID}`, {
+        method: 'GET'
+      });
+      const data = await response.json();
+      return data;
+    }
+
+    async postUsuarios(user){
+      const response = await fetch('http://localhost:3000/db', {
+        method: 'POST',
+        body: JSON.stringify(user),
+        headers: { 'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+
     async getAirport(center, radio){
       const response = await fetch(`${this.URI6}key=${this.key}&lat=${center.lat}&lng=${center.lng}&distance=${radio}`, {
         method: 'GET'
@@ -52,7 +93,9 @@ class ServiceTracking {
     }
   
     async getFligth(center, radio){
-        const response = await fetch(`${this.URI1}key=${this.key}&lat=${center.lat}&lng=${center.lng}&distance=${radio}`, {
+      let URL = `${this.URI1}key=${this.key}&lat=${center.lat}&lng=${center.lng}&distance=${radio}`;
+      radio > 800 ? URL = `${URL}&limit=15` : '';
+        const response = await fetch(URL, {
           method: 'GET'
         });
         const data = await response.json();
