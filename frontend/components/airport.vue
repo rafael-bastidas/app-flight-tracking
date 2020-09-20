@@ -105,6 +105,7 @@ import service from '../service/trankingService';
                 let dataUser = {email: this.$root.userCurrent.email, info: {departure: this.selected[0].iataDeparture, arrival: this.selected[0].iataArrival, airline: this.selected[0].icaoAirline, flight: this.selected[0].Vuelo}};
                 let trackAPI = new service();
                 await trackAPI.postDataUser(dataUser);
+                this.$root.userCurrent.info[this.$root.userCurrent.info.length] = dataUser.info;
             } else {
                 alert('No se dispone de la informacón suficiente para identificar el vuelo.');
             }
