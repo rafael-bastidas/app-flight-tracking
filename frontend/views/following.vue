@@ -64,11 +64,10 @@ import router from '../routes/router';
         let arrayAux = [];
         let arrayAux2 = [];
         let count = 0;
-        console.log(this.$root.userCurrent);
         this.items.forEach(element => {
           if(element.index !== this.selected[0].index){
             arrayAux[arrayAux.length] = {Salida: element.Salida, Llegada: element.Llegada, Aerolinea: element.Aerolinea, Vuelo: element.Vuelo, Hrs_Salida: element.Hrs_Salida, Hrs_Llegada: element.Hrs_Llegada, Estado: element.Estado, index: arrayAux.length};
-            arrayAux2[arrayAux2.length] = {departure: element.Salida, arrival: element.Llegada, airline: this.$root.userCurrent.info[count].airline, flight: element.Vuelo, index: arrayAux.length};
+            arrayAux2[arrayAux2.length] = {departure: element.Salida, arrival: element.Llegada, airline: this.$root.userCurrent.info[count].airline, flight: element.Vuelo, index: arrayAux2.length};
           }
           count++;
         }); 
@@ -103,7 +102,7 @@ import router from '../routes/router';
               } else {
                 count++;
                 if (dataFligth.length === count){
-                  console.log('El Vuelo ya no esta en la tabla TIMESTABLES de aviation-edge.com', count, dataFligth.length);
+                  console.log('El Vuelo', dataUser[i].flight, 'ya no esta en la tabla TIMESTABLES de aviation-edge.com', count, dataFligth.length);
                   arrayItem[arrayItem.length] = {
                     isActive: false,
                     index: dataUser[i].index,
@@ -119,7 +118,18 @@ import router from '../routes/router';
               }
             });
           } else {
-            console.log('Error de busqueda');
+            console.log('Error de busqueda: El Vuelo', dataUser[i].flight, 'no tiene ninguna coincidencia de busqueda.');
+            arrayItem[arrayItem.length] = {
+              isActive: false,
+              index: dataUser[i].index,
+              Vuelo: dataUser[i].flight,
+              Aerolinea: dataUser[i].airline,
+              Salida: dataUser[i].departure,
+              Hrs_Salida: '---',
+              Llegada: dataUser[i].arrival,
+              Hrs_Llegada: '---',
+              Estado: 'unknown',
+            }
           }
         }
         this.items = arrayItem;
