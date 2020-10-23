@@ -1,7 +1,7 @@
 class ServiceTracking {
 
     constructor() {
-      this.key = 'd67bd4-812908';
+      this.key = '8af1a5-06b638';
       this.URI1 = 'https://aviation-edge.com/v2/public/flights?';
       this.URI2 = 'https://aviation-edge.com/v2/public/routes?';
       this.URI3 = 'https://aviation-edge.com/v2/public/timetable?';
