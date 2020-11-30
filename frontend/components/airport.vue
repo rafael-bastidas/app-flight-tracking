@@ -22,13 +22,15 @@
                     </b-col>
                 </b-row>
             </b-card>
+
+            <!--
             <b-overlay
               :show="busy"
               rounded
               opacity="0.6"
               spinner-variant="primary"
               class="d-inline-block"
-            >
+            >-->
             <b-card title="Vuelos de llegada" class="mb-3">
               <b-table 
               selectable
@@ -56,7 +58,7 @@
               :items="itemsDeparture" 
               :fields="fieldsDeparture"></b-table>
             </b-card>
-            </b-overlay>
+            <!--</b-overlay>-->
 
             <b-modal id="bv-modal-example" hide-footer>
                 <div class="d-block text-center">
@@ -66,6 +68,25 @@
             </b-modal>
 
         </b-container>
+
+        <!-- OVERLAY Temporizado-->
+        <b-overlay :show="busy" no-wrap>
+          <template #overlay>
+            <div class="text-center p-4 bg-primary text-light rounded">
+              <b-icon icon="cloud-upload" font-scale="4"></b-icon>
+              <div class="mb-3">Processing...{{counter}}%</div>
+              <b-progress
+                min="0"
+                max="100"
+                :value="counter"
+                variant="success"
+                height="3px"
+                class="mx-n4 rounded-0"
+              ></b-progress>
+            </div>
+          </template>
+        </b-overlay>
+        <!-- Fin de prueba OVERLAY Temporizado-->
     </div>
 </template>
 
@@ -89,7 +110,9 @@ import service from '../service/trankingService';
             { text: '--', value: '--' }
         ],
         busy: false,
-        selected: []
+        selected: [],
+        counter: 1,
+        interval: null
       }
     },
     methods:{
@@ -110,14 +133,36 @@ import service from '../service/trankingService';
                 alert('No se dispone de la informacón suficiente para identificar el vuelo.');
             }
       },
+      onOK() {
+        this.counter = 0;
+        // Simulate an async request
+        this.clearInterval();
+        this.interval = setInterval(() => {
+          if (this.counter < 100) {
+            this.counter = this.counter + 5;
+          } else {
+            this.clearInterval();
+            this.$nextTick(() => {
+              this.busy = false;
+            });
+          }
+        }, 350);
+      },
+      clearInterval() {
+        if (this.interval) {
+          clearInterval(this.interval);
+          this.interval = null;
+        }
+      },
       async previewLoad(){
         this.busy = true;
         try {
+          this.onOK();
           await this.loadTimesTables();
         } catch (error) {
+          this.busy = false;
           console.log(error);
         }
-        this.busy = false;
       },
       async loadTimesTables(){
         this.itemsDeparture = [];
@@ -161,6 +206,8 @@ import service from '../service/trankingService';
           });
           this.itemsArrival = arrayItem;
         }
+
+        this.busy = false;
       },
       async loadAutoComplete3(){
             if(this.f_airport.length>2){

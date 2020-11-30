@@ -10,6 +10,17 @@ class ServiceTracking {
       this.URI6 = 'https://aviation-edge.com/v2/public/nearby?'
     }
 
+    async postSendEmail(dataUser){
+      const response = await fetch(`sendMail`, {
+        method: 'POST',
+        body: JSON.stringify(dataUser),
+        headers: { 'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    }
+
     async postDeleteOneDataUser(dataUser){
       const response = await fetch(`db/delete`, {
         method: 'POST',
@@ -37,6 +48,7 @@ class ServiceTracking {
         method: 'GET'
       });
       const data = await response.json();
+      console.log(data);
       return data;
     }
 

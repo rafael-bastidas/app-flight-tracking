@@ -4,7 +4,7 @@
             <b-card title="Vuelos" class="text-center mb-4 mt-2">     
                 <b-row class="mt-4">
                     <b-col md="6">
-                        <b-input-group size="sm" class="mb-2">
+                        <b-input-group size="md" class="mb-2">
                             <b-input-group-prepend is-text>
                                 <i class="fas fa-plane-departure"></i>
                             </b-input-group-prepend>
@@ -18,7 +18,7 @@
                         </b-input-group>
                     </b-col>
                     <b-col md="6">
-                        <b-input-group size="sm" class="mb-2">
+                        <b-input-group size="md" class="mb-2">
                             <b-input-group-prepend is-text>
                                 <i class="fas fa-plane-arrival"></i>
                             </b-input-group-prepend>
@@ -35,12 +35,12 @@
                 <b-button class="mt-2" variant="primary" v-on:click="previewLoad">Cargar Información</b-button>
             </b-card>
 
-            <b-overlay
+            <!--<b-overlay
               :show="busy"
               rounded
               opacity="0.6"
               spinner-variant="primary"
-            >
+            >-->
             <b-card title="Información de Vuelos" class="mb-3">
                 <b-table 
                 selectable
@@ -53,7 +53,7 @@
                 :items="items" 
                 :fields="fields"></b-table>
             </b-card>
-            </b-overlay>
+            <!--</b-overlay>-->
 
             <b-modal id="bv-modal-example" hide-footer>
                 <div class="d-block text-center">
@@ -63,6 +63,25 @@
             </b-modal>
         
         </b-container>
+
+        <!-- OVERLAY Temporizado-->
+        <b-overlay :show="busy" no-wrap>
+            <template #overlay>
+            <div class="text-center p-4 bg-primary text-light rounded">
+                <b-icon icon="cloud-upload" font-scale="4"></b-icon>
+                <div class="mb-3">Processing...{{counter}}%</div>
+                <b-progress
+                min="0"
+                max="100"
+                :value="counter"
+                variant="success"
+                height="3px"
+                class="mx-n4 rounded-0"
+                ></b-progress>
+            </div>
+            </template>
+        </b-overlay>
+        <!-- Fin de prueba OVERLAY Temporizado-->
     </div>
 </template>
 
@@ -86,7 +105,9 @@ import service from '../service/trankingService';
             { text: '--', value: '--' }
         ],
         busy: false,
-        selected: []
+        selected: [],
+        counter: 1,
+        interval: null
       }
     },
     methods: {
@@ -108,14 +129,36 @@ import service from '../service/trankingService';
                 alert('No se dispone de la informacón suficiente para identificar el vuelo.');
             }
         },
+        onOK() {
+            this.counter = 0;
+            // Simulate an async request
+            this.clearInterval();
+            this.interval = setInterval(() => {
+            if (this.counter < 100) {
+                this.counter = this.counter + 5;
+            } else {
+                this.clearInterval();
+                this.$nextTick(() => {
+                this.busy = false;
+                });
+            }
+            }, 350);
+        },
+        clearInterval() {
+            if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+            }
+        },
         async previewLoad(){
             this.busy = true;
             try {
+                this.onOK();
                 await this.loadInfo();
             } catch (error) {
+                this.busy = false;
                 console.log(error);
             }
-            this.busy = false;
         },
         async loadInfo(){
             this.items = [];
@@ -126,6 +169,8 @@ import service from '../service/trankingService';
                 this.items = await this.getArray(dataFligth);
                 console.log('SALE FOR ASIGNA Y LIBERA');
             }
+
+            this.busy = false;
         },
         async getArray(dataFligth){
             let arrayItems = [];

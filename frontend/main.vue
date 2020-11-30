@@ -2,7 +2,7 @@
 <div>
   <b-navbar toggleable="lg" type="dark" variant="info">
     <div class="container">
-      <b-navbar-brand href="/">
+      <b-navbar-brand :to="{name: 'home'}">
         <b-img v-bind="mainProps" rounded alt="Rounded image"></b-img>
       </b-navbar-brand>
 
@@ -10,9 +10,10 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+          <!--Se Remueven estos elementos
           <b-nav-item :to="{name: 'home'}">Inicio</b-nav-item>
           <b-nav-item :to="{name: 'find'}">Busqueda</b-nav-item>
-          <b-nav-item :to="{name: 'about'}">Nosotros</b-nav-item>
+          <b-nav-item :to="{name: 'about'}">Nosotros</b-nav-item> -->
           <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template v-slot:button-content>

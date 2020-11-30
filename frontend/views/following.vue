@@ -1,12 +1,11 @@
 <template>
     <div class="mt-4">
         <b-container fluid>        
-            <b-overlay
+            <!--<b-overlay
               :show="busy"
               rounded
               opacity="0.6"
-              spinner-variant="primary"
-            >
+              spinner-variant="primary">-->
             <b-card title="Información de Vuelos en seguimiento" class="mb-3">
                 <b-table
                 ref="selectableTable"
@@ -20,7 +19,7 @@
                 :items="items" 
                 :fields="fields"></b-table>
             </b-card>
-            </b-overlay>
+            <!--</b-overlay>-->
 
             <b-modal id="bv-modal-example" hide-footer>
                 <div class="d-block text-center">
@@ -30,6 +29,25 @@
             </b-modal>
 
         </b-container>
+
+        <!-- OVERLAY Temporizado-->
+        <b-overlay :show="busy" no-wrap>
+            <template #overlay>
+            <div class="text-center p-4 bg-primary text-light rounded">
+                <b-icon icon="cloud-upload" font-scale="4"></b-icon>
+                <div class="mb-3">Processing...{{counter}}%</div>
+                <b-progress
+                min="0"
+                max="100"
+                :value="counter"
+                variant="success"
+                height="3px"
+                class="mx-n4 rounded-0"
+                ></b-progress>
+            </div>
+            </template>
+        </b-overlay>
+        <!-- Fin de prueba OVERLAY Temporizado-->
     </div>
 </template>
 
@@ -46,14 +64,16 @@ import router from '../routes/router';
           { isActive: true, index: '', Vuelo: '---', Salida: '---', Hrs_Salida: '----', Llegada: '---', Hrs_Llegada: '----', Estado: '---', Aerolinea: '----' }
         ],
         busy: true,
-        selected: []
+        selected: [],
+        counter: 1,
+        interval: null
       }
     },
     mounted() {
       if(typeof this.$root.userCurrent.name !== 'undefined'){
-        this.initLoadDataUser();
+        this.previewLoad();
       } else {
-        router.push('find');
+        router.push('/');
       }
     },
     methods: {
@@ -140,7 +160,49 @@ import router from '../routes/router';
           this.selected = items;
           this.$bvModal.show('bv-modal-example');
         }
-      }
+      },
+      onOK() {
+            this.counter = 0;
+            // Simulate an async request
+            this.clearInterval();
+            this.interval = setInterval(() => {
+            if (this.counter < 100) {
+                this.counter = this.counter + 5;
+            } else {
+                this.clearInterval();
+                this.$nextTick(() => {
+                this.busy = false;
+                });
+            }
+            }, 350);
+        },
+        clearInterval() {
+            if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+            }
+        },
+        async previewLoad(){
+            try {
+                this.onOK();
+                await this.initLoadDataUser();
+                this.sendEmail();
+            } catch (error) {
+                this.busy = false;
+                console.log(error);
+            }
+        },
+        async sendEmail(){
+          let trackService = new service();
+          let msg = "<h1>Informe de vuelos:</h1><br>";
+          if (this.items.length > 0){
+            for (let index = 0; index < this.items.length; index++) {
+              const element = this.items[index];
+              msg += "<h3>Vuelo: "+element.Vuelo+", Estado: "+element.Estado+"</h3><br>";
+            }
+            await trackService.postSendEmail({email: "rafaelbastidas93@gmail.com", msgHtml: msg});
+          }
+        },
     }
   }
 </script>

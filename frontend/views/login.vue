@@ -71,7 +71,7 @@ import router from '../routes/router';
                 this.$root.bus.$emit('user', response[0]);
                 this.$root.userCurrent = response[0];
                 console.log('Usuario logueado', response[0].name);
-                router.push('find');
+                router.push('/');
             } else {
                 alert('Usuario/Contraseña errada');
             }
