@@ -46,7 +46,7 @@ setInterval(async () => {
   } catch (error) {
     console.log('err: ', error);
   }
-}, 3600000);
+}, 10000);
 //FIN PRUEBA
 
 // Start the server
