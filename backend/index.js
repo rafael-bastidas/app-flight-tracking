@@ -40,13 +40,13 @@ setInterval(async () => {
       from: '"Flight-Tracking" <remotepc288@gmail.com>',
       to: "rafaelbastidas93@gmail.com",
       subject: "Prueba nesima",
-      html: "hola que tal 2",
+      html: "Prueba de 30min",
     });
     console.log('send: ', info);
   } catch (error) {
     console.log('err: ', error);
   }
-}, 10000);
+}, 600000);
 //FIN PRUEBA
 
 // Start the server
