@@ -24,32 +24,14 @@ app.use('/', require('./routes/mainRoute'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //PRUEBA
-setInterval(async () => {
-  try {
-    let transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-          user: 'remotepc288@gmail.com', // generated ethereal user
-          pass: '2remotepc.', // generated ethereal password
-      },
-    });
-    // CORREO DE CONSULTAS ONLINE A PACIENTE.
-    let info = await transporter.sendMail({
-      from: '"Flight-Tracking" <remotepc288@gmail.com>',
-      to: "rafaelbastidas93@gmail.com",
-      subject: "Prueba nesima",
-      html: "Prueba de 30min",
-    });
-    console.log('send: ', info);
-  } catch (error) {
-    console.log('err: ', error);
-  }
-}, 600000);
+
 //FIN PRUEBA
 
 // Start the server
 app.listen(app.get('port'),() => {
   console.log('server on port', app.get('port'));
 });
+
+//Cliente ID: 253180086978-l94m00cmc73d885pj81tultb9aa47f3l.apps.googleusercontent.com
+//Password: xIBoavidbWgrdxnjRyQGLgdI
+// flight@atpendocrina.com / ri+0S!JF&r#G

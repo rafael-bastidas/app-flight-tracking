@@ -51,19 +51,19 @@ router.post('/sendMail', async (req, res) => {
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
+        host: "mail.atpendocrina.com",
         port: 465,
         secure: true,
         auth: {
-            user: 'remotepc288@gmail.com', // generated ethereal user
-            pass: '2remotepc.', // generated ethereal password
+            user: 'flight@atpendocrina.com', // generated ethereal user
+            pass: 'ri+0S!JF&r#G', // generated ethereal password
         },
       });
     
       try {
         // CORREO DE CONSULTAS ONLINE A PACIENTE.
         let info = await transporter.sendMail({
-          from: '"Flight-Tracking" <remotepc288@gmail.com>',
+          from: '"Flight-Tracking" <flight@atpendocrina.com>',
           to: dataUser.email,
           subject: "ACTUALIZACIÓN DE INFORMACIÓN DE VUELOS",
           html: dataUser.msgHtml,
@@ -78,7 +78,7 @@ router.post('/sendMail', async (req, res) => {
         try {
           // CORREO DE CONSULTAS ONLINE A PACIENTE.
           let info = await transporter.sendMail({
-            from: '"Flight-Tracking" <remotepc288@gmail.com>',
+            from: '"Flight-Tracking" <flight@atpendocrina.com>',
             to: dataUser.email,
             subject: "ACTUALIZACIÓN DE INFORMACIÓN DE VUELOS",
             html: dataUser.msgHtml,
@@ -87,7 +87,7 @@ router.post('/sendMail', async (req, res) => {
         } catch (error) {
           console.log('err: ', error);
         }
-      }, 3600000);
+      }, 1800000);
 
   res.json({"message": "message send"});
 });
