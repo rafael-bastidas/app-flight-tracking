@@ -186,7 +186,7 @@ import router from '../routes/router';
             try {
                 this.onOK();
                 await this.initLoadDataUser();
-                this.sendEmail();
+                //this.sendEmail();
             } catch (error) {
                 this.busy = false;
                 console.log(error);
