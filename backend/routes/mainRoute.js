@@ -81,7 +81,7 @@ router.post('/sendMail', async (req, res) => {
           } else {
             count++;
             if (dataFligth.length === count){
-              console.log('El Vuelo', dataUser[i].flight, 'ya no esta en la tabla TIMESTABLES de aviation-edge.com', count, dataFligth.length);
+              console.log('El Vuelo', dataUser[i].flight, 'ya no esta en la tabla TIMESTABLES de aviation-edge.comya', count, dataFligth.length);
               console.log({
                 Vuelo: dataUser[i].flight,
                 Aerolinea: dataUser[i].airline,
@@ -92,7 +92,7 @@ router.post('/sendMail', async (req, res) => {
                 Estado: 'unknown',
                 User: usuario[index].name,
                 Email: usuario[index].email});
-                msgHTML += "<h3>El Vuelo: "+dataUser[i].flight+", ya no esta en la tabla TIMESTABLES de aviation-edge.com</h3><br>";
+                msgHTML += "<h3>El Vuelo: "+dataUser[i].flight+", ya aterrizo</h3><br>";
             }
           }
         });
@@ -108,7 +108,7 @@ router.post('/sendMail', async (req, res) => {
           Estado: 'unknown',
           User: usuario[index].name,
           Email: usuario[index].email});
-          msgHTML += "<h3>Error de busqueda: El Vuelo: "+dataUser[i].flight+", no tiene ninguna coincidencia de busqueda en las bases de datos de aviation-edge.com</h3><br>";
+          msgHTML += "<h3>El Vuelo: "+dataUser[i].flight+", ya aterrizo</h3><br>";
       }
     } //Fin del for INterno
     //SE ENVIA LOS MESNAJES A CADA USUARIO.
